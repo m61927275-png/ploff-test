@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Қазақстан тарихынан бірегей тест. Өз біліміңізді тексеріңіз!">
+    <meta name="keywords" content="Қазақстан тарихы, қазақ тарихы тест, ҰБТ тарих, тарихтан тест тапсыру">
+    <meta name="author" content="Тарихшы-әзірлеуші">
+    
+    <title>Қазақстан тарихы - Бірегей тест</title>
+    <style>
+        :root {
+            --primary-color: #0072ce; /* Цвет флага РК */
+            --secondary-color: #feba02; /* Цвет солнца на флаге */
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #fafafa;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 6px;
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            color: var(--primary-color);
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            border: 1px solid transparent;
+        }
+        .options label:hover {
+            background-color: #eef2f5;
+            border-color: #d1d8dd;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 25px;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            display: none;
+        }
+        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Қазақстан тарихы: Ұлы Дала елі</h1>
+    <form id="quizForm">
+        </form>
+    <button type="button" onclick="calculateScore()">Нәтижені көру</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "1. Қазақ хандығының негізін қалаған хандар кімдер?",
+            options: ["Керей мен Жәнібек", "Қасым мен Хақназар", "Тәуке мен Абылай", "Есім мен Тәуекел"],
+            answer: 0
+        },
+        {
+            q: "2. Қазақ хандығы қай жылы құрылды?",
+            options: ["1456 жыл", "1465 жыл", "1511 жыл", "1711 жыл"],
+            answer: 1
+        },
+        {
+            q: "3. «Жеті жарғы» заңдар жинағын қай хан шығарды?",
+            options: ["Есім хан", "Қасым хан", "Тәуке хан", "Абылай хан"],
+            answer: 2
+        },
+        {
+            q: "4. «Ақтабан шұбырынды, Алқакөл сұлама» қасіреті қай жылдары болды?",
+            options: ["1710-1711 жж.", "1723-1727 жж.", "1729-1730 жж.", "1755-1758 жж."],
+            answer: 1
+        },
+        {
+            q: "5. Қазақстанның Ресей империясына қосылуы қай жүзден басталды?",
+            options: ["Ұлы жүз", "Орта жүз", "Кіші жүз", "Бөкей ордасы"],
+            answer: 2
+        },
+        {
+            q: "6. 1917 жылы құрылған қазақтың ұлттық-демократиялық партиясы қалай аталды?",
+            options: ["«Үш жүз»", "«Алаш»", "«Қазақ»", "«Түркістан»"],
+            answer: 1
+        },
+        {
+            q: "7. 1986 жылғы Желтоқсан оқиғасы қай қалада болды?",
+            options: ["Астана", "Қарағанды", "Шымкент", "Алматы"],
+            answer: 3
+        },
+        {
+            q: "8. Қазақстан Республикасы өзінің Мемлекеттік Тәуелсіздігін қашан жариялады?",
+            options: ["1990 жылы 25 қазанда", "1991 жылы 1 желтоқсанда", "1991 жылы 16 желтоқсанда", "1992 жылы 2 наурызда"],
+            answer: 2
+        },
+        {
+            q: "9. Тәуелсіз Қазақстанның тұңғыш астанасы қай қала?",
+            options: ["Ақмола", "Қызылорда", "Орынбор", "Алматы"],
+            answer: 3
+        },
+        {
+            q: "10. Әйгілі «Алтын адам» қай қорғаннан табылды?",
+            options: ["Есік қорғаны", "Берел қорғаны", "Шілікті қорғаны", "Бозой қорғаны"],
+            answer: 0
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+
+    questions.forEach((question, index) => {
+        const questionBlock = document.createElement('div');
+        questionBlock.className = 'question-block';
+        
+        const qTitle = document.createElement('div');
+        qTitle.className = 'question';
+        qTitle.innerText = question.q;
+        questionBlock.appendChild(qTitle);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+
+        question.options.forEach((opt, optIndex) => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index}`;
+            input.value = optIndex;
+            
+            label.appendChild(input);
+            label.append(` ${opt}`);
+            optionsDiv.appendChild(label);
+        });
+
+        questionBlock.appendChild(optionsDiv);
+        form.appendChild(questionBlock);
+    });
+
+    function calculateScore() {
+        let score = 0;
+        let allAnswered = true;
+
+        questions.forEach((question, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const block = document.getElementsByClassName('question-block')[index];
+            
+            if (!selected) {
+                allAnswered = false;
+            } else if (parseInt(selected.value) === question.answer) {
+                score++;
+                block.style.borderLeftColor = '#28a745';
+            } else {
+                block.style.borderLeftColor = '#dc3545';
+            }
+        });
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+
+        if (!allAnswered) {
+            resultDiv.className = 'incorrect';
+            resultDiv.innerText = 'Барлық сұрақтарға жауап беріңіз!';
+            return;
+        }
+
+        if (score >= 8) {
+            resultDiv.className = 'correct';
+            resultDiv.innerText = `Керемет! Сіздің нәтижеңіз: ${score} / 10`;
+        } else if (score >= 5) {
+            resultDiv.className = 'correct';
+            resultDiv.style.backgroundColor = '#fff3cd';
+            resultDiv.style.color = '#856404';
+            resultDiv.style.border = '1px solid #ffeeba';
+            resultDiv.innerText = `Жақсы! Сіздің нәтижеңіз: ${score} / 10`;
+        } else {
+            resultDiv.className = 'incorrect';
+            resultDiv.innerText = `Нәтиже төмен: ${score} / 10. Тарихты қайта оқыңыз!`;
+        }
+    }
+</script>
+
+</body>
+</html>

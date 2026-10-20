@@ -1,0 +1,2532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PLOFF — Меню ресторана восточной кухни</title>
+    <meta name="description" content="Официальное онлайн-меню ресторана PLOFF: настоящий ханский плов, сочный шашлык, манты, салаты, детское меню и десерты Happy Cake.">
+    <meta name="theme-color" content="#B2401C">
+
+    <!-- Fonts: Montserrat & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            /* Authentic PLOFF Terracotta & White Theme */
+            --ploff-primary: #B2401C;
+            --ploff-primary-dark: #8F2D10;
+            --ploff-primary-light: #C94C24;
+            --ploff-bg: #AC3E1C;
+            --ploff-bg-gradient: linear-gradient(180deg, #B5421D 0%, #A23617 100%);
+            
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --card-bg: #FFFFFF;
+            
+            --text-main: #1C1917;
+            --text-muted: #57534E;
+            --text-light: #8C827A;
+            --text-on-dark: #FFFFFF;
+            
+            --border-subtle: #EAE3DE;
+            --border-card: rgba(0, 0, 0, 0.05);
+            
+            --shadow-card: 0 10px 25px rgba(45, 15, 6, 0.15);
+            --shadow-hover: 0 16px 36px rgba(45, 15, 6, 0.22);
+            --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.35);
+
+            --radius-card: 22px;
+            --radius-pill: 999px;
+            
+            /* Status colors */
+            --color-stock-out: #DC2626;
+            --bg-stock-out: #FEF2F2;
+            --gray-blocked: #6B7280;
+            --gray-blocked-bg: #EEF0F2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--ploff-bg);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            line-height: 1.45;
+        }
+
+        /* Top Header Bar */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(172, 62, 28, 0.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .brand-logo-badge {
+            background: var(--white);
+            color: var(--ploff-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.35rem;
+            letter-spacing: -0.5px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .brand-text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.55rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            line-height: 1.1;
+            color: #FFFFFF;
+        }
+
+        .brand-text p {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        /* Search & Info */
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-pill);
+            padding: 10px 18px 10px 42px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: var(--ploff-primary);
+            pointer-events: none;
+        }
+
+        /* QR Button in Header */
+        .btn-qr-pill {
+            background: #FFFFFF;
+            color: var(--ploff-primary);
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.86rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-qr-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            background: #FFFDFB;
+        }
+
+        /* Printable QR Card Styles */
+        .qr-printable-card {
+            background: #FFFFFF;
+            border: 2px dashed #B2401C;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .qr-card-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--ploff-primary);
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+        }
+
+        .qr-card-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .qr-card-subtitle {
+            font-size: 0.78rem;
+            color: #6B7280;
+            margin-bottom: 16px;
+        }
+
+        .qr-canvas-wrap {
+            background: #FFFFFF;
+            padding: 12px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            border: 1px solid #E5E7EB;
+            min-width: 200px;
+            min-height: 200px;
+        }
+
+        .qr-canvas-wrap img, .qr-canvas-wrap canvas {
+            display: block;
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .qr-card-hint {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--ploff-primary);
+            margin-top: 14px;
+            letter-spacing: 0.5px;
+            word-break: break-all;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printableQrCard, #printableQrCard * {
+                visibility: visible !important;
+            }
+            #printableQrCard {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 320px;
+                padding: 40px 24px;
+                border: 2px solid #000000;
+                box-shadow: none !important;
+            }
+        }
+
+        /* Category Filter Tabs (Horizontal Scroll) */
+        .category-nav-wrap {
+            background: rgba(150, 48, 17, 0.98);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .category-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 0.86rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cat-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .cat-btn.active {
+            background: #FFFFFF;
+            color: var(--ploff-primary);
+            border-color: #FFFFFF;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Container */
+        .main-content {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        /* Category Section Styles */
+        .category-section {
+            margin-bottom: 44px;
+            scroll-margin-top: 140px;
+        }
+
+        .section-header-banner {
+            background: #D9D9D9;
+            background: linear-gradient(180deg, #E6E6E6 0%, #CFCFCF 100%);
+            color: #1F1916;
+            padding: 12px 24px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .section-header-banner h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .section-header-banner .subtitle {
+            font-size: 0.88rem;
+            font-weight: 600;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        /* Kids Menu Section Header */
+        .category-section.kids .section-header-banner {
+            background: #3AB4E6;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .kids-emojis {
+            font-size: 1.6rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        /* Happy Cake Section Header */
+        .category-section.happy-cake .section-header-banner {
+            background: #009BD6;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .happy-cake-badge {
+            font-family: 'Montserrat', cursive, sans-serif;
+            font-size: 1.45rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Dish Grid */
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        @media (min-width: 900px) {
+            .dishes-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .dishes-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        /* Single Dish Card */
+        .dish-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-card);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.3s ease, filter 0.3s ease;
+            position: relative;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Image Wrapper with rounded top and clean food preview */
+        .dish-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background: #F4EBE3;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dish-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .dish-card:hover .dish-img {
+            transform: scale(1.04);
+        }
+
+        /* Dish Info Body */
+        .dish-body {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .dish-header-row {
+            margin-bottom: 8px;
+        }
+
+        .dish-title-kz {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #1A1A1A;
+            line-height: 1.25;
+            margin-bottom: 3px;
+        }
+
+        .dish-title-ru {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #555555;
+            line-height: 1.25;
+        }
+
+        .dish-desc {
+            font-size: 0.82rem;
+            color: #6C7278;
+            line-height: 1.4;
+            margin: 8px 0 14px;
+            flex-grow: 1;
+        }
+
+        /* Multi options (like for drinks or plov weights) */
+        .dish-options-list {
+            margin: 8px 0 12px;
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dish-option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .dish-option-price {
+            font-weight: 800;
+            color: var(--ploff-primary);
+        }
+
+        /* Card Bottom: Price Only (NO ORDER BUTTONS) */
+        .dish-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #F0ECE8;
+            padding-top: 12px;
+            margin-top: 6px;
+        }
+
+        .dish-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .dish-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            letter-spacing: -0.3px;
+        }
+
+        .dish-currency {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ploff-primary);
+        }
+
+        .dish-portion {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #8C827A;
+            background: #F4F1ED;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        /* ========================================================
+           BLOCKED / OUT OF STOCK STYLING (Requirements)
+           ======================================================== */
+        .dish-card.is-blocked {
+            background-color: #EFEFEF !important;
+            border-color: #D6D6D6 !important;
+            filter: grayscale(100%);
+            opacity: 0.72;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .dish-card.is-blocked .dish-img {
+            filter: grayscale(100%) contrast(0.85);
+            opacity: 0.7;
+        }
+
+        .dish-card.is-blocked .dish-title-kz,
+        .dish-card.is-blocked .dish-title-ru {
+            color: #6B7280 !important;
+        }
+
+        .dish-card.is-blocked .dish-desc {
+            color: #9CA3AF !important;
+        }
+
+        .dish-card.is-blocked .dish-footer {
+            border-top-color: #E2E4E8 !important;
+        }
+
+        .dish-card.is-blocked .dish-price-box,
+        .dish-card.is-blocked .dish-portion {
+            display: none !important;
+        }
+
+        /* "сейчас нет в продаже" notice badge */
+        .badge-out-of-stock {
+            display: none;
+            width: 100%;
+            text-align: center;
+            background: #E5E7EB;
+            color: #4B5563;
+            border: 1px solid #D1D5DB;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 8px 12px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dish-card.is-blocked .badge-out-of-stock {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .blocked-ribbon {
+            display: none;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: #4B5563;
+            color: #FFFFFF;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 5;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .dish-card.is-blocked .blocked-ribbon {
+            display: block;
+        }
+
+        /* ========================================================
+           FLOATING PLOFF LOGO BUTTON IN BOTTOM RIGHT CORNER
+           ======================================================== */
+        .floating-ploff-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            background: #FFFFFF;
+            color: var(--ploff-primary);
+            border: 3px solid var(--ploff-primary);
+            border-radius: 50%;
+            width: 66px;
+            height: 66px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+            user-select: none;
+        }
+
+        .floating-ploff-btn:hover {
+            transform: scale(1.08) translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            background: #FFFBF9;
+        }
+
+        .floating-ploff-btn:active {
+            transform: scale(0.95);
+        }
+
+        .floating-ploff-btn .logo-txt {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 0.95rem;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        .floating-ploff-btn .logo-sub {
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-top: 1px;
+        }
+
+        /* ========================================================
+           PIN CODE MODAL (Requirement: 4582 & 5748)
+           ======================================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 10, 8, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow-modal);
+            transform: translateY(20px) scale(0.96);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            background: var(--ploff-primary);
+            color: #FFFFFF;
+            padding: 22px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #FFFFFF;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .modal-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+        }
+
+        .modal-header p {
+            font-size: 0.82rem;
+            opacity: 0.9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .pin-step-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pin-input-group {
+            margin-bottom: 18px;
+        }
+
+        .pin-input {
+            width: 100%;
+            letter-spacing: 14px;
+            font-size: 1.8rem;
+            text-align: center;
+            padding: 12px 16px;
+            font-family: 'Montserrat', monospace;
+            font-weight: 800;
+            border: 2px solid #E5E7EB;
+            border-radius: 14px;
+            outline: none;
+            background: #F9FAFB;
+            transition: all 0.2s ease;
+        }
+
+        .pin-input:focus {
+            border-color: var(--ploff-primary);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(178, 64, 28, 0.12);
+        }
+
+        .pin-input.error {
+            border-color: #EF4444;
+            background: #FEF2F2;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .pin-error-msg {
+            color: #DC2626;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-align: center;
+            min-height: 20px;
+            margin-top: -6px;
+            margin-bottom: 12px;
+        }
+
+        .btn-submit-pin {
+            width: 100%;
+            background: var(--ploff-primary);
+            color: #FFFFFF;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(178, 64, 28, 0.3);
+        }
+
+        .btn-submit-pin:hover {
+            background: var(--ploff-primary-dark);
+        }
+
+        /* ========================================================
+           ADMIN MANAGEMENT PANEL MODAL
+           ======================================================== */
+        .admin-modal-box {
+            background: #FFFFFF;
+            width: 95%;
+            max-width: 860px;
+            max-height: 90vh;
+            border-radius: 26px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow-modal);
+            position: relative;
+        }
+
+        .admin-header {
+            background: #1C1917;
+            color: #FFFFFF;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--ploff-primary);
+        }
+
+        .admin-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-controls-bar {
+            background: #F8F9FA;
+            padding: 14px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .admin-search-input {
+            padding: 8px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            min-width: 240px;
+            outline: none;
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-admin-action {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-block-selected {
+            background: #EF4444;
+            color: #FFFFFF;
+        }
+        .btn-block-selected:hover {
+            background: #DC2626;
+        }
+
+        .btn-unblock-selected {
+            background: #10B981;
+            color: #FFFFFF;
+        }
+        .btn-unblock-selected:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .admin-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 24px;
+        }
+
+        .admin-dish-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #E5E7EB;
+            margin-bottom: 8px;
+            transition: background 0.15s;
+            gap: 12px;
+        }
+
+        .admin-dish-row:hover {
+            background: #F9FAFB;
+        }
+
+        .admin-dish-row.is-blocked-row {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        .admin-dish-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .admin-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--ploff-primary);
+            cursor: pointer;
+        }
+
+        .admin-dish-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #E5E7EB;
+            flex-shrink: 0;
+        }
+
+        .admin-dish-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .admin-dish-info span {
+            font-size: 0.8rem;
+            color: #6B7280;
+        }
+
+        .admin-dish-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-badge {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .status-badge.in-stock {
+            background: #DEF7EC;
+            color: #03543F;
+        }
+
+        .status-badge.out-of-stock {
+            background: #FDE8E8;
+            color: #9B1C1C;
+        }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #10B981;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #EF4444;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .admin-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Footer */
+        .site-footer {
+            max-width: 1200px;
+            margin: 40px auto 20px;
+            padding: 24px 16px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .site-footer strong {
+            color: #FFFFFF;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px 14px;
+            }
+            .brand-logo-wrap {
+                justify-content: center;
+            }
+            .search-container {
+                max-width: 100%;
+            }
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+            .floating-ploff-btn {
+                bottom: 18px;
+                right: 18px;
+                width: 58px;
+                height: 58px;
+            }
+            .floating-ploff-btn .logo-txt {
+                font-size: 0.85rem;
+            }
+            .floating-ploff-btn .logo-sub {
+                font-size: 0.46rem;
+            }
+            .admin-controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-search-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with PLOFF Brand and Live Search -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="brand-logo-wrap">
+                <div class="brand-logo-badge">P</div>
+                <div class="brand-text">
+                    <h1>PLOFF</h1>
+                    <p>Мәзір • Меню ресторана</p>
+                </div>
+            </a>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 520px; justify-content: flex-end;">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="dishSearchInput" class="search-input" placeholder="Тағамды іздеу / Поиск блюда...">
+                </div>
+
+                <button class="btn-qr-pill" id="openQrModalBtn" title="QR-код для гостей и столиков">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>QR мәзір</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Navigation Bar -->
+        <nav class="category-nav-wrap">
+            <div class="category-nav" id="categoryNav">
+                <button class="cat-btn active" data-cat="all">Барлығы / Все</button>
+                <button class="cat-btn" data-cat="main">Негізгі тағамдар / Плов</button>
+                <button class="cat-btn" data-cat="mangal">Шашлык / Мангал</button>
+                <button class="cat-btn" data-cat="salads">Салаттар / Салаты</button>
+                <button class="cat-btn" data-cat="kids">Балалар мәзірі / Детское</button>
+                <button class="cat-btn" data-cat="drinks">Сусындар / Напитки</button>
+                <button class="cat-btn" data-cat="desserts">Happy Cake / Десерты</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="menuMainContent">
+        <!-- Dish sections will be dynamically rendered here -->
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <p><strong>PLOFF</strong> — Дәстүрлі шығыс асханасы мен шашлык мәзірі</p>
+        <p style="margin-top: 6px; font-size: 0.8rem; opacity: 0.7;">Бағалар теңгемен (₸) көрсетілген. Барлық құқықтар қорғалған © 2026</p>
+    </footer>
+
+    <!-- Floating PLOFF Logo Button in bottom right corner (Protected by 2 PIN codes) -->
+    <button class="floating-ploff-btn" id="openAdminPinBtn" title="PLOFF">
+        <span class="logo-txt">PLOFF</span>
+        <span class="logo-sub">RESTAURANT</span>
+    </button>
+
+    <!-- 0. QR Code Table Stand Modal -->
+    <div class="modal-overlay" id="qrModalOverlay">
+        <div class="modal-box" style="max-width: 440px; text-align: center;">
+            <div class="modal-header">
+                <button class="modal-close-btn" id="closeQrModalBtn">&times;</button>
+                <h3>QR-код меню PLOFF</h3>
+                <p>Отсканируйте камерой смартфона, чтобы открыть меню</p>
+            </div>
+            <div class="modal-body" style="padding: 22px 20px;">
+                <!-- Printable Card Preview -->
+                <div class="qr-printable-card" id="printableQrCard">
+                    <div class="qr-card-logo">PLOFF</div>
+                    <div class="qr-card-title">Электронды мәзір • Меню</div>
+                    <div class="qr-card-subtitle">Камераны жақындатыңыз / Наведите камеру</div>
+                    
+                    <div class="qr-canvas-wrap" id="qrCanvasContainer">
+                        <!-- QR code rendered here -->
+                    </div>
+
+                    <div class="qr-card-hint" id="qrDisplayUrlText">ploff.menu</div>
+                </div>
+
+                <!-- URL link settings -->
+                <div style="margin-top: 18px; text-align: left;">
+                    <label style="font-size: 0.8rem; font-weight: 700; color: #4B5563; margin-bottom: 5px; display: block;">
+                        Сілтеме / Ссылка на сайт:
+                    </label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="qrTargetUrlInput" class="admin-search-input" style="flex: 1; font-size: 0.82rem; padding: 10px;" placeholder="https://...">
+                        <button class="btn-admin-action btn-secondary" id="qrCopyUrlBtn" title="Көшіру / Скопировать">📋 Көшіру</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button class="btn-admin-action btn-secondary" id="downloadQrBtn" style="flex: 1; padding: 12px; font-weight: 800; justify-content: center;">
+                        📥 Скачать QR (PNG)
+                    </button>
+                    <button class="btn-admin-action btn-block-selected" id="printQrCardBtn" style="flex: 1; padding: 12px; font-weight: 800; justify-content: center; background: var(--ploff-primary);">
+                        🖨️ Печать карточки
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. PIN Code Entry Modal -->
+    <div class="modal-overlay" id="pinModalOverlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <button class="modal-close-btn" id="closePinModalBtn">&times;</button>
+                <h3>PLOFF Әкімшісі</h3>
+                <p>Тағамдарды стоп-параққа қою үшін пин-кодтарды енгізіңіз</p>
+            </div>
+            <div class="modal-body">
+                <div class="pin-input-group">
+                    <label class="pin-step-label">
+                        <span>Бірінші код / Первый код:</span>
+                        <span style="color: #6B7280; font-size: 0.78rem;">4 цифры</span>
+                    </label>
+                    <input type="password" id="pinInput1" class="pin-input" maxlength="4" placeholder="••••" inputmode="numeric" autocomplete="off">
+                </div>
+
+                <div class="pin-input-group">
+                    <label class="pin-step-label">
+                        <span>Екінші код / Второй код:</span>
+                        <span style="color: #6B7280; font-size: 0.78rem;">4 цифры</span>
+                    </label>
+                    <input type="password" id="pinInput2" class="pin-input" maxlength="4" placeholder="••••" inputmode="numeric" autocomplete="off">
+                </div>
+
+                <div class="pin-error-msg" id="pinErrorMsg"></div>
+
+                <button class="btn-submit-pin" id="verifyPinBtn">Кіру / Войти в управление</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Admin Dishes Management Modal -->
+    <div class="modal-overlay" id="adminModalOverlay">
+        <div class="admin-modal-box">
+            <div class="admin-header">
+                <h3>
+                    <span style="background: var(--ploff-primary); padding: 4px 10px; border-radius: 8px; font-size: 0.9rem;">PLOFF</span>
+                    Мәзірді басқару (Стоп-парақ)
+                </h3>
+                <button class="modal-close-btn" id="closeAdminModalBtn">&times;</button>
+            </div>
+
+            <div class="admin-controls-bar">
+                <input type="text" id="adminSearchInput" class="admin-search-input" placeholder="Іздеу / Поиск блюда...">
+                
+                <div class="admin-actions">
+                    <button class="btn-admin-action btn-secondary" id="adminFilterAllBtn" style="font-weight: 700;">Барлығы / Все</button>
+                    <button class="btn-admin-action btn-secondary" id="adminFilterBlockedBtn" style="color: #DC2626; font-weight: 700;">🚫 Тек стоп-лист / Заблокированные</button>
+                    <button class="btn-admin-action btn-secondary" id="adminSelectAllBtn">Таңдау / Выбрать все</button>
+                    <button class="btn-admin-action btn-block-selected" id="adminBlockSelectedBtn">🚫 В стоп-лист</button>
+                    <button class="btn-admin-action btn-unblock-selected" id="adminUnblockSelectedBtn">✅ Вернуть в продажу</button>
+                    <button class="btn-admin-action btn-secondary" id="adminResetAllBtn" style="background: #FEF3C7; color: #92400E; font-weight: 800;" title="Очистить стоп-лист и вернуть все блюда">🔄 Вернуть ВСЁ</button>
+                </div>
+            </div>
+
+            <div class="admin-list-container" id="adminDishesList">
+                <!-- Admin dish items list will be dynamically rendered here -->
+            </div>
+
+            <div class="admin-footer">
+                <div style="font-size: 0.85rem; color: #4B5563;">
+                    Барлығы: <strong id="adminTotalCount">0</strong> | Стоп-парақта: <strong id="adminBlockedCount" style="color: #DC2626;">0</strong>
+                </div>
+                <button class="btn-admin-action btn-secondary" id="closeAdminFooterBtn" style="padding: 10px 20px; font-weight: 800;">
+                    Жабу және сақтау / Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // ==========================================
+        // PLOFF COMPLETE DISHES DATA REPOSITORY
+        // (Transcribed exactly from the 5 menu photos)
+        // ==========================================
+        const MENU_DATA = [
+            // --- 1. НЕГІЗГІ ТАҒАМДАР / ОСНОВНЫЕ БЛЮДА ---
+            {
+                id: "main-khan-plov",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Хан палау",
+                titleRU: "Ханский плов",
+                descKZ: "Сиыр еті, сары сәбіз, казы, бөдене жұмыртқасы және хош иісті дәмдеуіштер",
+                descRU: "Говядина, отборный рис, желтая морковь, казы и перепелиные яйца",
+                price: 2890,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-mereké-plov",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Мерекелік палау",
+                titleRU: "Праздничный плов",
+                descKZ: "Сиыр еті, қой еті / Говядина мен таңдаулы күріштен дайындалған той палауы",
+                descRU: "Говядина, баранина, традиционный праздничный рецепт с нутом и изюмом",
+                price: 2090,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-guyru-lagman",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Гуйру лагман",
+                titleRU: "Гуйру лагман",
+                descKZ: "Қолдан созылған ұзын қамыр, шырынды ет, қытырлақ бұрыш және дәмді тұздық",
+                descRU: "Тянутая вручную лапша, сочная говядина и крупно нарезанные тушеные овощи",
+                price: 2490,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-tsomyan-lagman",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Цомян лагман",
+                titleRU: "Цомян лагман",
+                descKZ: "Қуырылған лагман, отта қуырылған ет, көкөністер мен сарымсақ тұздығы",
+                descRU: "Жареный лагман на сильном огне с мясом, сладким перцем и специями",
+                price: 2490,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-manti-rublennye",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Мәнті",
+                titleRU: "Манты с рубленным мясом",
+                descKZ: "Майдалап туралған шырынды ет, жібектей жұқа қамыр, пияз бен дәмдеуіштер",
+                descRU: "Манты с сочным рубленым мясом, тонкое тесто, подаются со сметаной",
+                price: 1990,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1541529086526-db283c563270?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-hoshan-manti",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Хошан Мәнті",
+                titleRU: "Хошан Манты (Жареные)",
+                descKZ: "Қуырылған қытырлақ түбі мен буда піскен шырынды етті мәнті",
+                descRU: "Жареные манты с аппетитной хрустящей корочкой и сочной начинкой",
+                price: 2090,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-tushpara",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Тұшпара, Пельмени",
+                titleRU: "Пельмени (Жареные)",
+                descKZ: "Қуырылған мини-тұшпаралар, арнайы тұздықпен бірге",
+                descRU: "Хрустящие жареные пельмешки фри с пикантным соусом",
+                price: 1690,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-kebab-mix",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Кебаб микс",
+                titleRU: "Кебаб микс",
+                descKZ: "Люля-кебаб, картоп фри, күріш, жаңа салат, қызанақ, қияр, арнайы бөлкелер",
+                descRU: "Люля-кебаб, картофель фри, рис, салат, помидоры, огурцы, фирменные булочки",
+                price: 2690,
+                portion: "Комбо",
+                image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-chicken-mix",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Чикен микс",
+                titleRU: "Чикен микс",
+                descKZ: "Шырынды тауық еті, фри, дәмді күріш, қызанақ, қияр және жылы бөлкелер",
+                descRU: "Куриное филе гриль, картофель фри, рис, свежие овощи и булочки",
+                price: 2590,
+                portion: "Комбо",
+                image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-adana-kebab",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Адана кебаб",
+                titleRU: "Адана кебаб (Баранина + Говядина)",
+                descKZ: "Қой және сиыр етінен жасалған өткір шашлык, фри, күріш, маринадталған пияз",
+                descRU: "Сочный пряный кебаб на шампуре, гарнир из риса и фри, маринованный лук",
+                price: 2690,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-kazan-plov",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Қазан палау",
+                titleRU: "Казан плова (на заказ)",
+                descKZ: "Үлкен топтар мен отбасылық басқосуларға арналған қазан палау",
+                descRU: "Большой казан плова для компании: 2.5 кг (7-10 чел.) — 14 490 ₸ | 5 кг (15-20 чел.) — 28 990 ₸",
+                price: 14490,
+                portion: "от 2.5 кг",
+                image: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-manti-set",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Мәнті Сет (30 дана)",
+                titleRU: "Сет Манты (30 шт.)",
+                descKZ: "30 дана буда піскен (11 890 ₸) немесе қуырылған мәнті (12 490 ₸)",
+                descRU: "Большой сет из 30 мантов: отварные — 11 890 ₸, жареные хошан — 12 490 ₸",
+                price: 11890,
+                portion: "30 шт.",
+                image: "https://images.unsplash.com/photo-1541529086526-db283c563270?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "main-beshbarmak",
+                cat: "main",
+                catNameKZ: "Негізгі тағамдар",
+                catNameRU: "Основные блюда",
+                titleKZ: "Бешбармақ",
+                titleRU: "Бешпармак",
+                descKZ: "Күту уақыты 20 минуттан артық. Жұқа жайылған қамыр, қазы, сүр ет пен құртты сорпасымен",
+                descRU: "Традиционный бешпармак с отборным мясом и тончайшей сочней (Ожидание от 20 минут)",
+                price: 3890,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80"
+            },
+
+            // --- 2. ШАШЛЫК / МАНГАЛ ---
+            {
+                id: "mangal-assorti",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Ассорти мангал",
+                titleRU: "Ассорти мангал (8 шт.)",
+                descKZ: "8 түрлі таңдаулы кәуап жиынтығы: тауық, сиыр, қой, люля-кебаб және соустар",
+                descRU: "Большое блюдо сочных шашлыков на углях (8 шампуров) с маринованным луком и соусами",
+                price: 11990,
+                portion: "8 шт.",
+                image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-chicken",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Кесектелген тауық еті",
+                titleRU: "Кусковой Куриный",
+                descKZ: "Арнайы дәмдеуіштерге маринадталған жұмсақ әрі шырынды тауық еті",
+                descRU: "Нежнейшее куриное филе в авторском маринаде, обжаренное на березовых углях",
+                price: 1290,
+                portion: "Шампур",
+                image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-napoleon-beef",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Наполеон сиыр еті",
+                titleRU: "Наполеон Говядина",
+                descKZ: "Құйрық майымен қабатталған нәзік сиыр етінен жасалған фирмалық кәуап",
+                descRU: "Фирменный слоеный шашлык из мраморной говядины с тончайшими прослойками курдюка",
+                price: 1590,
+                portion: "Шампур",
+                image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-lyulya",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Люля-кебаб",
+                titleRU: "Люля-кебаб (Сиыр / Қой)",
+                descKZ: "Сиыр еті немесе Қой етінен жасалған шырынды фарштан пісірілген кебаб",
+                descRU: "Классический люля-кебаб из отборной говядины или баранины со специями",
+                price: 1590,
+                portion: "Шампур",
+                image: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-lamb-pieces",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Кесектелген қой еті",
+                titleRU: "Кусковой Баранина",
+                descKZ: "Қойдың жас етінен кесіліп, шоққа қуырылған дәмді кәуап",
+                descRU: "Отборная баранина на углях с восточными специями и хрустящим лучком",
+                price: 1590,
+                portion: "Шампур",
+                image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-kurdjuk",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Мангал и Шашлыки",
+                titleKZ: "Қақталған құйрық май",
+                titleRU: "Копчёный курдюк",
+                descKZ: "Жұқалап туралған хош иісті қақталған құйрық, маринадталған пияз бен нанмен",
+                descRU: "Ароматный тонко нарезанный копченый курдюк с зеленью и лучком",
+                price: 990,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "mangal-sauces",
+                cat: "mangal",
+                catNameKZ: "Шашлык / Мангал",
+                catNameRU: "Соусы к мясу",
+                titleKZ: "Тұздықтар",
+                titleRU: "Соусы в ассортименте",
+                descKZ: "Қаймақ, Майонез, Кетчуп, Ірімшік, Лазджан (ащы), Айоли тұздықтары",
+                descRU: "Сметана, Майонез, Кетчуп, Сырный, Лазджан (острый), Айоли",
+                price: 250,
+                portion: "50 гр",
+                image: "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=600&auto=format&fit=crop&q=80"
+            },
+
+            // --- 3. САЛАТТАР / САЛАТЫ ---
+            {
+                id: "salad-french",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Французский",
+                titleRU: "Французский салат",
+                descKZ: "Сиыр еті, шампиньон саңырауқұлағы, корей сәбізі, жұмыртқа, қытырлақ пай картобы",
+                descRU: "Говядина, шампиньоны, корейская морковь, яйцо, хрустящий картофель пай",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-warm",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Жылы салат",
+                titleRU: "Тёплый салат",
+                descKZ: "Қытырлақ баялды (баклажан), панировкадағы тауық еті, қызанақ, балғын кінза",
+                descRU: "Хрустящие баклажаны, курочка в хрустящей панировке, сладкие томаты, кинза",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-green-cheese",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Жасыл және ірімшік",
+                titleRU: "Микс зелени с сыром",
+                descKZ: "Салат жапырақтары, черри қызанағы, зәйтүн, нәзік сүзбе ірімшігі",
+                descRU: "Салат-микс, томаты черри, маслины, нежный творожный сыр и фирменная заправка",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-vitamin",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Дәруменді",
+                titleRU: "Витаминный салат",
+                descKZ: "Сәбіз, салат-микс, пекин қырыққабаты, қызыл пияз, апельсин тілімдері",
+                descRU: "Свежая морковь, салатный микс, пекинская капуста, красный лук, дольки апельсина",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-caesar",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Цезарь",
+                titleRU: "Салат Цезарь с курицей",
+                descKZ: "Тауық сүбесі, айсберг жапырағы, черри, бөдене жұмыртқасы, сыр, қытырлақ сухариктер",
+                descRU: "Нежное куриное филе, хрустящий айсберг, черри, перепелиные яйца, сыр пармезан, сухарики",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-greek",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Грек салаты",
+                titleRU: "Греческий салат",
+                descKZ: "Қызанақ, қияр, брынза ірімшігі, салат-микс, зәйтүн, тәтті бұрыш, пияз",
+                descRU: "Спелые помидоры, свежие огурцы, сыр брынза, салат-микс, маслины, болгарский перец, лук",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-shuba",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Тон астындағы майшабақ",
+                titleRU: "Сельдь под шубой",
+                descKZ: "Майшабақ, картоп, тәтті қызылша, майонез, жұмыртқа қабаттары",
+                descRU: "Слабосоленая сельдь, отварной картофель, свекла, яйца и соус майонез",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-olivier",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Оливье",
+                titleRU: "Оливье с говядиной",
+                descKZ: "Сиыр еті, картоп, сәбіз, жұмыртқа, жасыл бұршақ және классикалық тұздық",
+                descRU: "Отборная говядина, картофель, морковь, яйца, зеленый горошек и соус",
+                price: 1290,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-achichuk",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Ачичук (ащы)",
+                titleRU: "Ачичук к плову",
+                descKZ: "Жұқа туралған тәтті қызанақ, пияз, кінза және ащы бұрыш дәмдеуіштері",
+                descRU: "Тончайше нарезанные помидоры, репчатый лук, кинза и пряные восточные специи",
+                price: 990,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1592417817098-8f3d69109853?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-fresh",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Балғын салат",
+                titleRU: "Свежий овощной салат",
+                descKZ: "Қызанақ, қияр, сақиналанған пияз, балғын аскөк, болгар бұрышы",
+                descRU: "Свежие помидоры, хрустящие огурцы, лук, зелень, болгарский перец",
+                price: 990,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "salad-korean-carrot",
+                cat: "salads",
+                catNameKZ: "Салаттар",
+                catNameRU: "Салаты",
+                titleKZ: "Корей морков",
+                titleRU: "Корейская морковь",
+                descKZ: "Сарымсақ, май және хош иісті дәмдеуіштер қосылған қытырлақ сәбіз",
+                descRU: "Пряная морковь по-корейски со свежей зеленью и специями",
+                price: 690,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80"
+            },
+
+            // --- 4. БАЛАЛАР МӘЗІРІ / ДЕТСКОЕ МЕНЮ ---
+            {
+                id: "kids-nuggets",
+                cat: "kids",
+                catNameKZ: "Балалар мәзірі",
+                catNameRU: "Детское меню",
+                titleKZ: "Наггетсы",
+                titleRU: "Куриные наггетсы",
+                descKZ: "Тауық етінен дайындалған қытырлақ наггетстер, кетчуппен",
+                descRU: "Золотистые наггетсы из нежного филе цыпленка с соусом",
+                price: 1090,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "kids-puree-cutlet",
+                cat: "kids",
+                catNameKZ: "Балалар мәзірі",
+                catNameRU: "Детское меню",
+                titleKZ: "Тауық еті қосылған картоп пюресі",
+                titleRU: "Куриная котлета с пюре",
+                descKZ: "Балаларға арналған сүтті картоп пюресі және жұмсақ тауық котлеті",
+                descRU: "Домашнее воздушное картофельное пюре на молоке с нежной куриной котлеткой",
+                price: 1390,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "kids-french-fries",
+                cat: "kids",
+                catNameKZ: "Балалар мәзірі",
+                catNameRU: "Детское меню",
+                titleKZ: "Фри картобы",
+                titleRU: "Картофель фри",
+                descKZ: "Алтын түстес қытырлақ картоп фри, томат кетчупімен",
+                descRU: "Аппетитный хрустящий картофель фри с порционным кетчупом",
+                price: 890,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "kids-fries-sausage",
+                cat: "kids",
+                catNameKZ: "Балалар мәзірі",
+                catNameRU: "Детское меню",
+                titleKZ: "Шұжықша қосылған фри",
+                titleRU: "Фри с сосиской",
+                descKZ: "Картоп фри және қуырылған дәмді балалар шұжығы",
+                descRU: "Золотистый картофель фри с аппетитной поджаренной сосиской",
+                price: 1090,
+                portion: "Порция",
+                image: "https://images.unsplash.com/photo-1619860860774-1e2e17343432?w=600&auto=format&fit=crop&q=80"
+            },
+
+            // --- 5. СУСЫНДАР / ХОЛОДНЫЕ НАПИТКИ & ЛИМОНАДЫ ---
+            {
+                id: "drink-water",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Холодные напитки",
+                titleKZ: "Су / Вода",
+                titleRU: "Питьевая вода (газ / без газа)",
+                descKZ: "Таза табиғи ауыз суы (0.5 л — 590 ₸ | 1 л — 790 ₸)",
+                descRU: "Освежающая вода высшей очистки (0.5 л — 590 ₸ | 1 л — 790 ₸)",
+                price: 590,
+                portion: "0.5 л / 1 л",
+                image: "https://images.unsplash.com/photo-1559839914-ba2a1ae0303b?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-cola",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Холодные напитки",
+                titleKZ: "Кола",
+                titleRU: "Coca-Cola",
+                descKZ: "Салқындатылған сергіткіш кола (0.5 л — 990 ₸ | 1 л — 1490 ₸)",
+                descRU: "Классическая охлажденная кола (0.5 л — 990 ₸ | 1 л — 1490 ₸)",
+                price: 990,
+                portion: "0.5 л / 1 л",
+                image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-piko-juice",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Холодные напитки",
+                titleKZ: "Piko шырыны",
+                titleRU: "Сок Piko в ассортименте",
+                descKZ: "Табиғи жеміс шырындары (0.2 л — 590 ₸ | 1 л — 1590 ₸)",
+                descRU: "Фруктовые соки в ассортименте (0.2 л — 590 ₸ | 1 л — 1590 ₸)",
+                price: 590,
+                portion: "0.2 л / 1 л",
+                image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-turkish-ayran",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Холодные напитки",
+                titleKZ: "Түрік айраны",
+                titleRU: "Турецкий айран",
+                descKZ: "Салқын, табиғи дәстүрлі ашытылған сүт сусыны",
+                descRU: "Традиционный освежающий турецкий айран (0.33 л)",
+                price: 690,
+                portion: "0.33 л",
+                image: "https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-lemonades",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Лимонады авторские",
+                titleKZ: "Лимонадтар",
+                titleRU: "Авторские лимонады",
+                descKZ: "Жидек миксы, Тропикалық, Мохито, Грейпфрут-таңқурай, Киви-лайм, Цитрустық (0.4 л — 890 ₸ | 1 л — 1790 ₸)",
+                descRU: "Ягодный микс, Тропический, Мохито, Грейпфрут-малина, Киви-лайм, Цитрусовый (0.4 л — 890 ₸ | 1 л — 1790 ₸)",
+                price: 890,
+                portion: "0.4 л / 1 л",
+                image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-mors",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Морсы",
+                titleKZ: "Морс мүкжидек",
+                titleRU: "Морс клюквенный",
+                descKZ: "Табиғи мүкжидектен қайнатылған салқын морс (0.4 л — 990 ₸ | 1 л — 1890 ₸)",
+                descRU: "Натуральный охлаждающий клюквенный морс (0.4 л — 990 ₸ | 1 л — 1890 ₸)",
+                price: 990,
+                portion: "0.4 л / 1 л",
+                image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "drink-milkshakes",
+                cat: "drinks",
+                catNameKZ: "Сусындар",
+                catNameRU: "Молочные коктейли",
+                titleKZ: "Сүт коктейльдер",
+                titleRU: "Молочные коктейли",
+                descKZ: "Сүтті, Шоколад, Құлпынай дәмімен (0.3 л — 1290 ₸)",
+                descRU: "Густой сливочный коктейль: Ванильный, Шоколадный, Клубничный (0.3 л)",
+                price: 1290,
+                portion: "0.3 л",
+                image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop&q=80"
+            },
+
+            // --- 6. HAPPY CAKE ДЕСЕРТТЕРІ / ДЕСЕРТЫ ---
+            {
+                id: "dessert-banoffee-pie",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Пирог «Баноффи Пай»",
+                titleRU: "Пирог «Баноффи Пай»",
+                descKZ: "Қытырлақ құмды қамыр, карамельдегі банан және нәзік қаймақты крем",
+                descRU: "Хрустящее песочное тесто, бананы в нежной карамели со сливочным кремом",
+                price: 1390,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-milk-girl",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Молочная девочка",
+                titleRU: "Торт «Молочная девочка»",
+                descKZ: "Еріп кететін жеңіл қатпарлы қамыр және ерекше сүтті кілегей кремі",
+                descRU: "Воздушные тончайшие коржи на сгущенном молоке с нежнейшим сливочным кремом",
+                price: 1590,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-honey",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Медовый",
+                titleRU: "Торт «Медовый»",
+                descKZ: "Табиғи бал негізінде жасалған хош иісті жұқа қамыр, нәзік қаймақты крем",
+                descRU: "Ароматные тонкие коржи на основе натурального меда, пропитанные нежным кремом",
+                price: 1590,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-napoleon",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Наполеон",
+                titleRU: "Торт «Наполеон»",
+                descKZ: "Қытырлақ жұқа қатпарлы қамыр, қайнатылған ванильді креммен сіңген",
+                descRU: "Тонкие хрустящие слоеные коржи, щедро пропитанные заварным ванильным кремом",
+                price: 1590,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-snickers",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "«Сникерс»",
+                titleRU: "Торт «Сникерс»",
+                descKZ: "Шоколадты бисквит, қуырылған арахис, қою карамель және безе қабаты",
+                descRU: "Шоколадный бисквит с прослойкой из безе и жареного арахиса с густой карамелью",
+                price: 1790,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-cheesecake-oreo",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Чизкейк «Орео»",
+                titleRU: "Чизкейк «Орео»",
+                descKZ: "Орео печеньесі қосылған сливочный чизкейк негізі, нәзік сүзбе кремі",
+                descRU: "Классический сливочный чизкейк с кусочками печенья Oreo и нежной текстурой",
+                price: 1790,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: "dessert-san-sebastian",
+                cat: "desserts",
+                catNameKZ: "Happy Cake десерттері",
+                catNameRU: "Десерты Happy Cake",
+                titleKZ: "Чизкейк «Сан-Себастьян»",
+                titleRU: "Чизкейк «Сан-Себастьян»",
+                descKZ: "Испандық күйдірілген чизкейк, ортасында еріген крем құрылымымен",
+                descRU: "Нежный испанский обожженный чизкейк с шелковистой тающей серединкой",
+                price: 1990,
+                portion: "Тілім / Кусочек",
+                image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&auto=format&fit=crop&q=80"
+            }
+        ];
+
+        // ==========================================
+        // LOCAL STORAGE KEY FOR BLOCKED DISHES
+        // ==========================================
+        const STORAGE_KEY = 'ploff_blocked_dishes_v1';
+
+        // Load blocked ids from LocalStorage
+        function getBlockedSet() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? new Set(JSON.parse(raw)) : new Set();
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        // Save blocked ids to LocalStorage
+        function saveBlockedSet(set) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
+            renderMenu();
+            renderAdminList();
+        }
+
+        // Current Category & Search Query
+        let currentCategory = 'all';
+        let searchQuery = '';
+
+        // Category definitions
+        const CATEGORIES = [
+            { id: "main", nameKZ: "Негізгі тағамдар", nameRU: "Основные блюда & Плов", class: "" },
+            { id: "mangal", nameKZ: "Шашлык / Мангал", nameRU: "Шашлыки на углях & Соусы", class: "" },
+            { id: "salads", nameKZ: "Салаттар", nameRU: "Салаты", class: "" },
+            { id: "kids", nameKZ: "Балалар мәзірі", nameRU: "Детское меню", class: "kids" },
+            { id: "drinks", nameKZ: "Сусындар", nameRU: "Холодные напитки & Лимонады", class: "" },
+            { id: "desserts", nameKZ: "Happy Cake десерттері", nameRU: "Десерты Happy Cake", class: "happy-cake" }
+        ];
+
+        // ==========================================
+        // RENDER CLIENT MENU
+        // ==========================================
+        function renderMenu() {
+            const container = document.getElementById('menuMainContent');
+            const blockedSet = getBlockedSet();
+
+            // Filter dishes by search
+            const filteredDishes = MENU_DATA.filter(dish => {
+                const matchesCat = currentCategory === 'all' || dish.cat === currentCategory;
+                const q = searchQuery.toLowerCase().trim();
+                const matchesSearch = !q || 
+                    dish.titleKZ.toLowerCase().includes(q) || 
+                    dish.titleRU.toLowerCase().includes(q) || 
+                    dish.descKZ.toLowerCase().includes(q) || 
+                    dish.descRU.toLowerCase().includes(q) ||
+                    dish.price.toString().includes(q);
+
+                return matchesCat && matchesSearch;
+            });
+
+            if (filteredDishes.length === 0) {
+                container.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.92); border-radius: 24px; padding: 48px 20px; text-align: center; color: #374151; max-width: 500px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                        <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
+                        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; margin-bottom: 8px;">Блюда не найдены</h3>
+                        <p style="font-size: 0.9rem; color: #6B7280;">Тағам табылмады. Басқа сөзбен іздеп көріңіз немесе категорияны өзгертіңіз.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category
+            let html = '';
+
+            CATEGORIES.forEach(catMeta => {
+                const catDishes = filteredDishes.filter(d => d.cat === catMeta.id);
+                if (catDishes.length === 0) return;
+
+                let headerExtra = '';
+                if (catMeta.id === 'kids') {
+                    headerExtra = `<span class="kids-emojis">👶🍟✨</span>`;
+                } else if (catMeta.id === 'desserts') {
+                    headerExtra = `<span class="happy-cake-badge">Happy Cake</span>`;
+                }
+
+                html += `
+                    <section class="category-section ${catMeta.class}" id="sec-${catMeta.id}">
+                        <div class="section-header-banner">
+                            <h2>${catMeta.nameKZ} / ${catMeta.nameRU}</h2>
+                            ${headerExtra ? `<div style="margin-top: 4px;">${headerExtra}</div>` : ''}
+                        </div>
+                        <div class="dishes-grid">
+                            ${catDishes.map(dish => {
+                                const isBlocked = blockedSet.has(dish.id);
+                                return `
+                                    <div class="dish-card ${isBlocked ? 'is-blocked' : ''}" id="card-${dish.id}">
+                                        <div class="blocked-ribbon">Стоп-лист</div>
+                                        <div class="dish-img-wrap">
+                                            <img src="${dish.image}" alt="${dish.titleRU}" class="dish-img" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80';">
+                                        </div>
+                                        <div class="dish-body">
+                                            <div>
+                                                <div class="dish-header-row">
+                                                    <h3 class="dish-title-kz">${dish.titleKZ}</h3>
+                                                    <div class="dish-title-ru">${dish.titleRU}</div>
+                                                </div>
+                                                <p class="dish-desc">${dish.descRU}</p>
+                                            </div>
+                                            
+                                            <div class="dish-footer">
+                                                <div class="dish-price-box">
+                                                    <span class="dish-price">${dish.price.toLocaleString('ru-RU')}</span>
+                                                    <span class="dish-currency">₸</span>
+                                                </div>
+                                                <div class="dish-portion">${dish.portion}</div>
+                                                
+                                                <!-- Status when blocked -->
+                                                <div class="badge-out-of-stock">
+                                                    <span>🚫</span>
+                                                    <span>сейчас нет в продаже</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </section>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // PIN VERIFICATION LOGIC
+        // Requirement: First code 4582, Second code 5748
+        // ==========================================
+        const PIN_CODE_1 = "4582";
+        const PIN_CODE_2 = "5748";
+
+        const openAdminPinBtn = document.getElementById('openAdminPinBtn');
+        const pinModalOverlay = document.getElementById('pinModalOverlay');
+        const closePinModalBtn = document.getElementById('closePinModalBtn');
+        const pinInput1 = document.getElementById('pinInput1');
+        const pinInput2 = document.getElementById('pinInput2');
+        const verifyPinBtn = document.getElementById('verifyPinBtn');
+        const pinErrorMsg = document.getElementById('pinErrorMsg');
+
+        const adminModalOverlay = document.getElementById('adminModalOverlay');
+        const closeAdminModalBtn = document.getElementById('closeAdminModalBtn');
+        const closeAdminFooterBtn = document.getElementById('closeAdminFooterBtn');
+
+        // Open PIN modal
+        openAdminPinBtn.addEventListener('click', () => {
+            pinInput1.value = '';
+            pinInput2.value = '';
+            pinErrorMsg.textContent = '';
+            pinInput1.classList.remove('error');
+            pinInput2.classList.remove('error');
+            pinModalOverlay.classList.add('open');
+            setTimeout(() => pinInput1.focus(), 150);
+        });
+
+        // Close PIN modal
+        closePinModalBtn.addEventListener('click', () => {
+            pinModalOverlay.classList.remove('open');
+        });
+
+        // Auto move focus between inputs
+        pinInput1.addEventListener('input', () => {
+            if (pinInput1.value.length === 4) {
+                pinInput2.focus();
+            }
+        });
+
+        pinInput2.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && pinInput2.value.length === 0) {
+                pinInput1.focus();
+            }
+        });
+
+        // Enter key to submit
+        [pinInput1, pinInput2].forEach(input => {
+            input.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    handlePinVerification();
+                }
+            });
+        });
+
+        verifyPinBtn.addEventListener('click', handlePinVerification);
+
+        function handlePinVerification() {
+            const val1 = pinInput1.value.trim();
+            const val2 = pinInput2.value.trim();
+
+            if (val1 === PIN_CODE_1 && val2 === PIN_CODE_2) {
+                // SUCCESS
+                pinModalOverlay.classList.remove('open');
+                openAdminPanel();
+            } else {
+                // ERROR
+                pinErrorMsg.textContent = 'Қате пин-код! / Неверный код доступа. Повторите ввод.';
+                pinInput1.classList.add('error');
+                pinInput2.classList.add('error');
+                setTimeout(() => {
+                    pinInput1.classList.remove('error');
+                    pinInput2.classList.remove('error');
+                }, 500);
+            }
+        }
+
+        // ==========================================
+        // ADMIN MANAGEMENT PANEL LOGIC
+        // ==========================================
+        const adminDishesList = document.getElementById('adminDishesList');
+        const adminSearchInput = document.getElementById('adminSearchInput');
+        const adminFilterAllBtn = document.getElementById('adminFilterAllBtn');
+        const adminFilterBlockedBtn = document.getElementById('adminFilterBlockedBtn');
+        const adminSelectAllBtn = document.getElementById('adminSelectAllBtn');
+        const adminBlockSelectedBtn = document.getElementById('adminBlockSelectedBtn');
+        const adminUnblockSelectedBtn = document.getElementById('adminUnblockSelectedBtn');
+        const adminResetAllBtn = document.getElementById('adminResetAllBtn');
+        const adminTotalCount = document.getElementById('adminTotalCount');
+        const adminBlockedCount = document.getElementById('adminBlockedCount');
+
+        let adminFilterQuery = '';
+        let adminFilterMode = 'all'; // 'all' or 'blocked_only'
+
+        function openAdminPanel() {
+            adminSearchInput.value = '';
+            adminFilterQuery = '';
+            adminFilterMode = 'all';
+            updateAdminFilterTabs();
+            renderAdminList();
+            adminModalOverlay.classList.add('open');
+        }
+
+        function closeAdminPanel() {
+            adminModalOverlay.classList.remove('open');
+            pinInput1.value = '';
+            pinInput2.value = '';
+            pinErrorMsg.textContent = '';
+            renderMenu();
+        }
+
+        closeAdminModalBtn.addEventListener('click', closeAdminPanel);
+        closeAdminFooterBtn.addEventListener('click', closeAdminPanel);
+
+        adminSearchInput.addEventListener('input', (e) => {
+            adminFilterQuery = e.target.value.toLowerCase().trim();
+            renderAdminList();
+        });
+
+        // Tab filters: All vs Only Blocked
+        function updateAdminFilterTabs() {
+            if (adminFilterMode === 'all') {
+                adminFilterAllBtn.style.background = '#1F1916';
+                adminFilterAllBtn.style.color = '#FFFFFF';
+                adminFilterBlockedBtn.style.background = '#E5E7EB';
+                adminFilterBlockedBtn.style.color = '#DC2626';
+            } else {
+                adminFilterAllBtn.style.background = '#E5E7EB';
+                adminFilterAllBtn.style.color = '#374151';
+                adminFilterBlockedBtn.style.background = '#DC2626';
+                adminFilterBlockedBtn.style.color = '#FFFFFF';
+            }
+        }
+
+        adminFilterAllBtn.addEventListener('click', () => {
+            adminFilterMode = 'all';
+            updateAdminFilterTabs();
+            renderAdminList();
+        });
+
+        adminFilterBlockedBtn.addEventListener('click', () => {
+            adminFilterMode = 'blocked_only';
+            updateAdminFilterTabs();
+            renderAdminList();
+        });
+
+        function renderAdminList() {
+            const blockedSet = getBlockedSet();
+            adminTotalCount.textContent = MENU_DATA.length;
+            adminBlockedCount.textContent = blockedSet.size;
+
+            const filtered = MENU_DATA.filter(dish => {
+                const isBlocked = blockedSet.has(dish.id);
+                if (adminFilterMode === 'blocked_only' && !isBlocked) return false;
+
+                if (!adminFilterQuery) return true;
+                return dish.titleKZ.toLowerCase().includes(adminFilterQuery) ||
+                       dish.titleRU.toLowerCase().includes(adminFilterQuery) ||
+                       dish.catNameRU.toLowerCase().includes(adminFilterQuery);
+            });
+
+            if (filtered.length === 0) {
+                adminDishesList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #6B7280;">
+                        <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">
+                            ${adminFilterMode === 'blocked_only' ? 'Стоп-парақта ешқандай тағам жоқ / В стоп-листе нет блюд (все в продаже)' : 'Тағамдар табылмады / Ничего не найдено'}
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            adminDishesList.innerHTML = filtered.map(dish => {
+                const isBlocked = blockedSet.has(dish.id);
+                return `
+                    <div class="admin-dish-row ${isBlocked ? 'is-blocked-row' : ''}" data-id="${dish.id}">
+                        <div class="admin-dish-left">
+                            <input type="checkbox" class="admin-checkbox row-select-checkbox" data-id="${dish.id}">
+                            <img src="${dish.image}" class="admin-dish-thumb" alt="${dish.titleRU}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&auto=format&fit=crop&q=80';">
+                            <div class="admin-dish-info">
+                                <h4>${dish.titleRU} <span style="font-weight: 500; color: #4B5563;">(${dish.titleKZ})</span></h4>
+                                <span>${dish.catNameRU} • <strong>${dish.price.toLocaleString('ru-RU')} ₸</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="admin-dish-right">
+                            ${isBlocked ? `
+                                <button class="btn-admin-action quick-unblock-btn" data-id="${dish.id}" style="background: #10B981; color: white; padding: 6px 12px; font-size: 0.78rem; font-weight: 800;">
+                                    ✅ Вернуть в продажу
+                                </button>
+                            ` : `
+                                <span class="status-badge in-stock">
+                                    ✅ В продаже
+                                </span>
+                            `}
+                            <label class="switch" title="${isBlocked ? 'Разблокировать (Вернуть в продажу)' : 'Заблокировать (В стоп-лист)'}">
+                                <input type="checkbox" class="toggle-status-switch" data-id="${dish.id}" ${isBlocked ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Bind single toggle switches
+            document.querySelectorAll('.toggle-status-switch').forEach(toggle => {
+                toggle.addEventListener('change', (e) => {
+                    const id = e.target.dataset.id;
+                    const set = getBlockedSet();
+                    if (e.target.checked) {
+                        set.add(id); // Blocked
+                    } else {
+                        set.delete(id); // Available (Returned to sale)
+                    }
+                    saveBlockedSet(set);
+                });
+            });
+
+            // Bind quick unblock buttons
+            document.querySelectorAll('.quick-unblock-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    const set = getBlockedSet();
+                    set.delete(id); // Return back to sale
+                    saveBlockedSet(set);
+                });
+            });
+        }
+
+        // Select All / Deselect All
+        let allSelectedToggle = false;
+        adminSelectAllBtn.addEventListener('click', () => {
+            allSelectedToggle = !allSelectedToggle;
+            document.querySelectorAll('.row-select-checkbox').forEach(cb => cb.checked = allSelectedToggle);
+            adminSelectAllBtn.textContent = allSelectedToggle ? 'Таңдауды алу / Снять выбор' : 'Таңдау / Выбрать все';
+        });
+
+        // Block Selected
+        adminBlockSelectedBtn.addEventListener('click', () => {
+            const selected = Array.from(document.querySelectorAll('.row-select-checkbox:checked')).map(cb => cb.dataset.id);
+            if (selected.length === 0) {
+                alert('Алдымен кем дегенде бір тағамды таңдаңыз / Выберите хотя бы одно блюдо');
+                return;
+            }
+            const set = getBlockedSet();
+            selected.forEach(id => set.add(id));
+            saveBlockedSet(set);
+        });
+
+        // Unblock Selected (Вернуть в продажу выбранные)
+        adminUnblockSelectedBtn.addEventListener('click', () => {
+            const selected = Array.from(document.querySelectorAll('.row-select-checkbox:checked')).map(cb => cb.dataset.id);
+            if (selected.length === 0) {
+                alert('Алдымен кем дегенде бір тағамды таңдаңыз / Выберите хотя бы одно блюдо для возврата в продажу');
+                return;
+            }
+            const set = getBlockedSet();
+            selected.forEach(id => set.delete(id)); // Remove from blocked set -> returned to sale!
+            saveBlockedSet(set);
+        });
+
+        // Reset All (Вернуть ВСЕ блюда в продажу)
+        adminResetAllBtn.addEventListener('click', () => {
+            if (confirm('Шынымен барлық тағамдарды сатылымға қайтарасыз ба? / Вернуть ВСЕ блюда в продажу (очистить стоп-лист)?')) {
+                saveBlockedSet(new Set()); // Empty set -> all available!
+            }
+        });
+
+        // ==========================================
+        // CATEGORY SWITCHING & CLIENT SEARCH
+        // ==========================================
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                renderMenu();
+            });
+        });
+
+        const dishSearchInput = document.getElementById('dishSearchInput');
+        dishSearchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderMenu();
+        });
+
+        // ==========================================
+        // QR CODE MODAL & GENERATOR FOR TABLES
+        // ==========================================
+        const qrModalOverlay = document.getElementById('qrModalOverlay');
+        const openQrModalBtn = document.getElementById('openQrModalBtn');
+        const closeQrModalBtn = document.getElementById('closeQrModalBtn');
+        const qrCanvasContainer = document.getElementById('qrCanvasContainer');
+        const qrTargetUrlInput = document.getElementById('qrTargetUrlInput');
+        const qrDisplayUrlText = document.getElementById('qrDisplayUrlText');
+        const qrCopyUrlBtn = document.getElementById('qrCopyUrlBtn');
+        const downloadQrBtn = document.getElementById('downloadQrBtn');
+        const printQrCardBtn = document.getElementById('printQrCardBtn');
+
+        let qrCodeInstance = null;
+
+        function getDefaultMenuUrl() {
+            if (window.location.protocol.startsWith('http')) {
+                return window.location.href;
+            }
+            return 'https://ваш-логин.github.io/ploff-menu/';
+        }
+
+        function generateQrCode(url) {
+            qrCanvasContainer.innerHTML = '';
+            qrDisplayUrlText.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    qrCodeInstance = new QRCode(qrCanvasContainer, {
+                        text: url,
+                        width: 220,
+                        height: 220,
+                        colorDark: "#1C1917",
+                        colorLight: "#FFFFFF",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    return;
+                } catch (e) {
+                    console.warn('QRCode.js error, using fallback API', e);
+                }
+            }
+
+            // High-reliability Fallback API
+            const fallbackImg = document.createElement('img');
+            fallbackImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(url)}`;
+            fallbackImg.alt = "QR Code";
+            fallbackImg.style.width = "220px";
+            fallbackImg.style.height = "220px";
+            qrCanvasContainer.appendChild(fallbackImg);
+        }
+
+        // Open QR Modal
+        openQrModalBtn.addEventListener('click', () => {
+            const currentUrl = qrTargetUrlInput.value.trim() || getDefaultMenuUrl();
+            qrTargetUrlInput.value = currentUrl;
+            generateQrCode(currentUrl);
+            qrModalOverlay.classList.add('open');
+        });
+
+        // Close QR Modal
+        closeQrModalBtn.addEventListener('click', () => {
+            qrModalOverlay.classList.remove('open');
+        });
+
+        // Live update QR when URL input changes
+        qrTargetUrlInput.addEventListener('input', (e) => {
+            const newUrl = e.target.value.trim();
+            if (newUrl) {
+                generateQrCode(newUrl);
+            }
+        });
+
+        // Copy URL button
+        qrCopyUrlBtn.addEventListener('click', async () => {
+            const url = qrTargetUrlInput.value.trim();
+            try {
+                await navigator.clipboard.writeText(url);
+                const originalText = qrCopyUrlBtn.textContent;
+                qrCopyUrlBtn.textContent = '✅ Көшірілді!';
+                setTimeout(() => { qrCopyUrlBtn.textContent = originalText; }, 1800);
+            } catch (err) {
+                prompt('Сілтемені көшіріп алыңыз / Скопируйте ссылку:', url);
+            }
+        });
+
+        // Download QR as PNG
+        downloadQrBtn.addEventListener('click', () => {
+            const canvas = qrCanvasContainer.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'PLOFF_menu_QR.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } else {
+                const img = qrCanvasContainer.querySelector('img');
+                if (img) {
+                    window.open(img.src, '_blank');
+                }
+            }
+        });
+
+        // Print Card for Table Stand (Тейбл-тент)
+        printQrCardBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // Close modals on clicking backdrop
+        window.addEventListener('click', (e) => {
+            if (e.target === qrModalOverlay) qrModalOverlay.classList.remove('open');
+            if (e.target === pinModalOverlay) pinModalOverlay.classList.remove('open');
+            if (e.target === adminModalOverlay) closeAdminPanel();
+        });
+
+        // Sync changes across browser tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_KEY) {
+                renderMenu();
+                if (adminModalOverlay.classList.contains('open')) {
+                    renderAdminList();
+                }
+            }
+        });
+
+        // Initial render
+        renderMenu();
+    </script>
+</body>
+</html>

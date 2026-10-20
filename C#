@@ -1,0 +1,22 @@
+using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    public Transform target; // Сюда в Unity перетащим кубик
+    public float yOffset = 1f; // Насколько камера смещена вверх относительно кубика
+
+    void LateUpdate()
+    {
+        if (target != null)
+        {
+            // Берем текущую позицию камеры
+            Vector3 newPos = transform.position;
+            
+            // Меняем ТОЛЬКО координату Y (высоту), чтобы она плавно следовала за кубиком
+            // Используем Mathf.Max, чтобы камера двигалась ТОЛЬКО вверх и никогда не падала вниз
+            newPos.y = Mathf.Max(transform.position.y, target.position.y + yOffset);
+            
+            transform.position = newPos;
+        }
+    }
+}
